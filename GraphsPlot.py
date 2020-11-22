@@ -15,7 +15,7 @@ def drawVelocity(Velocities , numberOfEntities):
 
 
 
-def drawLocation(Locations , numberOfEntities=1):
+def drawLocation(Locations , numberOfEntities):
     data = {'location': Locations }
     for entityIndex in range(numberOfEntities):
         plt.plot([x[entityIndex][0] for x in data['location']],[x[entityIndex][1] for x in data['location']])

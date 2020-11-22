@@ -60,7 +60,7 @@ class Simulation:
         self.entities_v_at_k = []  # list of entities_curr_v, for each k
         self.entities_v_at_k.append(entities_curr_v)  # entities_v in k=0
 
-
+        self.entities_num = entities_num
         self.max_k = max_k
         self.current_k = 1
 

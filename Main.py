@@ -1,4 +1,6 @@
 from Simulation import Simulation
+from Simulation import Simulation
+from GraphsPlot import drawVelocity, drawLocation
 
 print("**** Sim of 1 entity and the rest attr are default ****")
 sim = Simulation(1)
@@ -38,3 +40,5 @@ print(sim.desired_v_list)
 print("Velocities:")
 print(len(sim.entities_v_at_k))
 print(sim.entities_v_at_k)
+drawVelocity(sim.entities_v_at_k, sim.entities_num)
+drawLocation(sim.entities_pos_at_k, sim.entities_num)
