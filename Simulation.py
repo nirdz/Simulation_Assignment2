@@ -25,7 +25,7 @@ class Simulation:
     def __init__(self, entities_num, max_k=9000, room_size=15.0, doors=1, starting_pos="center", velocities_type="same"):
         room = Room(size=room_size, doors=doors)
         entities_list = []
-        x0 = room_size / 2  # middle of the room
+        x0 = room_size / 2  # default position, middle of the room
         y0 = room_size / 2
         v0 = 0
         desired_v = 0.6  # default desired velocity under relaxed
@@ -80,7 +80,7 @@ class Simulation:
             self.current_k += 1
             are_people_inside = self.check_if_people_inside()
 
-
+    """ Returns true if the room is empty """
     def check_if_people_inside(self):
         for entity in self.entities_list:
             if not entity.is_reached_door():
