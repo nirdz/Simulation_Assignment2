@@ -28,3 +28,11 @@ def drawLocation(Locations , numberOfEntities):
     plt.ylabel('Y')
     plt.xlabel('X')
     plt.show()
+
+def escapeTimeBar(escapeTimes):
+    numberOfTimes = [str(x+1) for x in range(len(escapeTimes))]
+    plt.bar(numberOfTimes, escapeTimes)
+    plt.title('Escape Times of Simulations')
+    plt.ylabel('Time')
+    plt.xlabel('iterations')
+    plt.show()
