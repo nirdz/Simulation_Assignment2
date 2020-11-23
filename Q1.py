@@ -1,5 +1,5 @@
 from Simulation import Simulation
-from GraphsPlot import drawVelocity, drawLocation
+from GraphsPlot import drawVelocity, drawLocation, escapeTimeBar
 import copy
 
 print(sum(list(range(200,1,-1))))
@@ -55,8 +55,9 @@ print("Max time to complete: ", max_time)
 # Sorting the time list
 sorted_time_to_complete_list = copy.deepcopy(time_to_complete_list)
 sorted_time_to_complete_list.sort()
+# Display the time graph of each sim
+escapeTimeBar(sorted_time_to_complete_list)
 print()
-# TODO: Display here the time graph of each sim
 
 """ c """
 closeness_per_k = [0 for i in range(max_time + 1)]  # How many times the entities were dangerously close in each k

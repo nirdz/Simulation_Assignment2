@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-
+import numpy as np
 
 def drawVelocity(Velocities , numberOfEntities):
     data = {'velocity': Velocities,
@@ -32,7 +32,8 @@ def drawLocation(Locations , numberOfEntities):
 def escapeTimeBar(escapeTimes):
     numberOfTimes = [str(x+1) for x in range(len(escapeTimes))]
     plt.bar(numberOfTimes, escapeTimes)
+    plt.yticks(np.arange(0, max(escapeTimes) + 1, 250))
     plt.title('Escape Times of Simulations')
-    plt.ylabel('Time')
-    plt.xlabel('iterations')
+    plt.ylabel('Time in k')
+    plt.xlabel('Sim #')
     plt.show()
