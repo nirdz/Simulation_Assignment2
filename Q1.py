@@ -1,23 +1,22 @@
 from Simulation import Simulation
 from GraphsPlot import drawVelocity, drawLocation, escapeTimeBar
 import copy
+import math
 
-print(sum(list(range(200,1,-1))))
 """ a """
 print("**** Sim of 1 entity and the rest attr are default ****")
 sim1 = Simulation(1)
 sim1.simulate()
+print("Time:", sim1.current_k-1)
 print("Positions:")
-print(len(sim1.entities_pos_at_k))
-print(sim1.entities_pos_at_k)
+print(sim1.entities_pos_dict)
 print("Desired Velocities of each entity:")
 print(sim1.desired_v_list)
 print("Velocities:")
-print(len(sim1.entities_v_at_k))
-print(sim1.entities_v_at_k)
+print(sim1.entities_v_dict)
 # Displaying the graphs
-drawVelocity(sim1.entities_v_at_k, sim1.entities_num)
-drawLocation(sim1.entities_pos_at_k, sim1.entities_num)
+drawVelocity(sim1.entities_v_dict)
+drawLocation(sim1.entities_pos_dict)
 
 """ b """
 print("**** 200 Sims of 1 entity and random positions and default velocity ****")
@@ -30,7 +29,9 @@ for i in range(200):
     sims.append(sim)
     print(i, ": Num of steps: ", sim.current_k-1)
     time_to_complete_list.append(sim.current_k-1)
-    entities_pos_at_k_for_each_sim.append(sim.entities_pos_at_k)
+
+    entities_pos_at_k_for_each_sim.append(sim.entities_pos_dict["0"])
+
     # drawVelocity(sim.entities_v_at_k, sim.entities_num)
     # drawLocation(sim.entities_pos_at_k, sim.entities_num)
     print()
@@ -65,14 +66,14 @@ for k in range(len(closeness_per_k)):
     points_at_curr_k = []
     for pos_list in entities_pos_at_k_for_each_sim:
         if k < len(pos_list):
-            points_at_curr_k.append(pos_list[k][0])  # [0] because there is only 1 point (1 entity)
+            points_at_curr_k.append(pos_list[k])
     # Now we have a list of positions at k,
     # check for each position whether it is close to the other points
     for i in range(len(points_at_curr_k)):  # Should be 0 -> 199
         for j in range(i + 1, (len(points_at_curr_k))):
             point_i = points_at_curr_k[i]
             point_j = points_at_curr_k[j]
-            if abs(point_j[0] - point_i[0]) < 0.5 or abs(point_j[1] - point_i[1]) < 0.5:
+            if math.sqrt( ((point_i[0]-point_j[0])**2)+((point_i[1]-point_j[1])**2) ) < 0.5:
                 closeness_per_k[k] += 1
 
 print(closeness_per_k)

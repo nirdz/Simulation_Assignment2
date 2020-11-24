@@ -22,13 +22,13 @@ def get_random_starting_pos(room_size, jumps=0.1):
     return chosen_x, chosen_y
 
 class Simulation:
-    def __init__(self, entities_num, max_k=9000, room_size=15.0, doors=1, starting_pos="center", velocities_type="same"):
+    def __init__(self, entities_num, max_k=9000, room_size=15.0, doors=1, starting_pos="center", velocities_type="same", default_desired_v=0.6):
         room = Room(size=room_size, doors=doors)
         entities_list = []
         x0 = room_size / 2  # default position, middle of the room
         y0 = room_size / 2
         v0 = 0
-        desired_v = 0.6  # default desired velocity under relaxed
+        desired_v = default_desired_v  # default desired velocity under relaxed is 0.6
         if velocities_type == "random":
             desired_v = get_random_desired_v(0.6, 1.5)
         if starting_pos == "random":
@@ -48,42 +48,40 @@ class Simulation:
             if starting_pos == "random":
                 x0, y0 = get_random_starting_pos(room_size)
 
+
         self.entities_list = entities_list
-        entities_curr_pos = []  # list of tuples, each represents entity's location in x and y axises
-        for entity in entities_list:
-            entities_curr_pos.append(entity.location)
 
-        self.entities_pos_at_k = []  # list of entities_pos, for each k
-        self.entities_pos_at_k.append(entities_curr_pos)  # entities_pos in k=0
+        # Each item represents an entity's locations list
+        self.entities_pos_dict = dict(zip([str(ent.i) for ent in entities_list], [ [] for ent in entities_list]))
+        # Each item represents an entity's velocities list
+        self.entities_v_dict = dict(zip([str(ent.i) for ent in entities_list], [ [] for ent in entities_list]))
 
-        entities_curr_v = [v0 for entity in entities_list]
-        self.entities_v_at_k = []  # list of entities_curr_v, for each k
-        self.entities_v_at_k.append(entities_curr_v)  # entities_v in k=0
+
 
         self.entities_num = entities_num
         self.max_k = max_k
         self.current_k = 1
 
     def simulate(self):
-        are_people_inside = True
-
-        while self.current_k <= self.max_k and are_people_inside:
-            entities_curr_pos = []  # list of tuples, each represents entity's location in x and y axises
-            entities_curr_v = []
+        while self.current_k <= self.max_k and len(self.entities_list) > 0:
+            entities_to_remove = []
             for entity in self.entities_list:
                 entity.move(self.entities_list)
-                entities_curr_pos.append(entity.location)
-                entities_curr_v.append(entity.v_k)
+                self.entities_pos_dict[str(entity.i)].append(entity.location)
+                self.entities_v_dict[str(entity.i)].append(entity.v_k)
+                if entity.is_outside:
+                    entities_to_remove.append(entity)
 
-            self.entities_pos_at_k.append(entities_curr_pos)
-            self.entities_v_at_k.append(entities_curr_v)
+            for ent in entities_to_remove:
+                self.entities_list.remove(ent)
+
+
             self.current_k += 1
-            are_people_inside = self.check_if_people_inside()
 
-    """ Returns true if the room is empty """
-    def check_if_people_inside(self):
-        for entity in self.entities_list:
-            if not entity.is_reached_door():
-                return True
-        return False
+    # """ Returns true if the room is empty """
+    # def check_if_people_inside(self):
+    #     for entity in self.entities_list:
+    #         if not entity.is_reached_door():
+    #             return True
+    #     return False
 

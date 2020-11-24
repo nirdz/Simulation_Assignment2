@@ -1,13 +1,16 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def drawVelocity(Velocities , numberOfEntities):
-    data = {'velocity': Velocities,
-            'time' : [ X*0.01 for X in range(int(len(Velocities)))] ,
-            'intervals' : [ X*2 for X in range(int(len(Velocities)/200)+1)] }
-    for entityIndex in range(numberOfEntities):
-        plt.plot(data['time'] , [x[entityIndex] for x in data['velocity']])
-    plt.xticks(data['intervals'])
+def drawVelocity(velocities_dict):
+    # data = {'velocity': Velocities,
+    #         'time' : [ X*0.01 for X in range(int(len(Velocities)))] ,
+    #         'intervals' : [ X*2 for X in range(int(len(Velocities)/200)+1)] }
+
+    for key, val in velocities_dict.items():
+        list_to_plot = val
+        time_to_plot = [x for x in range(len(list_to_plot))]
+        plt.plot(time_to_plot, list_to_plot)
+
     plt.title('velocity VS time')
     plt.ylabel('Velocity')
     plt.xlabel('time')
@@ -15,10 +18,20 @@ def drawVelocity(Velocities , numberOfEntities):
 
 
 
-def drawLocation(Locations , numberOfEntities):
-    data = {'location': Locations }
-    for entityIndex in range(numberOfEntities):
-        plt.plot([x[entityIndex][0] for x in data['location']],[x[entityIndex][1] for x in data['location']])
+def drawLocation(locations_dict):
+    data = {'location': locations_dict}
+    # for entityIndex in range(numberOfEntities):
+    #     plt.plot([x[entityIndex][0] for x in data['location']],[x[entityIndex][1] for x in data['location']])
+
+
+    for key, val in locations_dict.items():
+        list_x_to_plot = []
+        list_y_to_plot = []
+        for p in val:
+            list_x_to_plot.append(p[0])
+            list_y_to_plot.append(p[1])
+        plt.plot(list_x_to_plot, list_y_to_plot)
+
     plt.xticks([x for x in range(16)])
     plt.yticks([y for y in range(16)])
     axes = plt.gca()
