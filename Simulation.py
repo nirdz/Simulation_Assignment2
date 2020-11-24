@@ -37,7 +37,7 @@ class Simulation:
         tau = 0.5
         self.desired_v_list = []  # List for each of the entities desired velocity
         for i in range(entities_num):
-            entity = Entity(i, room, x0, y0, v0, desired_v=desired_v, tau=tau)
+            entity = Entity(i, room, x0, y0, v0=v0, desired_v=desired_v, tau=tau)
             entities_list.append(entity)
             self.desired_v_list.append(desired_v)
             # TODO: Based on starting_pos and velocities_type, decide if randomize the starting positions

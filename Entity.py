@@ -1,15 +1,19 @@
 import math
 
 class Entity:
-    def __init__(self, i, room, x0, y0, body_radius=0.5, v0=0, desired_v=0.6, tau=0.5):
+    def __init__(self, i, room, x0, y0, body_radius=0.3, space_radius=0.5, v0=0, desired_v=0.6, tau=0.5):
         self.i = i
         self.room = room  # Room object
         self.x = x0  # starting x location
         self.y = y0  # starting y location
-        self.body_radius = body_radius  # For collision with other people
-        self.goal_x = room.door_x
-        self.goal_y = room.door_y
-        self.goal_y_offset = room.door_width / 2
+        self.space_radius = space_radius  # For collision with other people
+        self.body_radius = body_radius  # For not colliding with the door's walls
+
+        # Determine the goal point of the entity
+        self.goal_x = -1
+        self.goal_y = -1
+        self.set_goal_point()
+
         self.desired_v = desired_v
         self.a = desired_v / tau
         self.v_k_minus1 = v0
@@ -24,6 +28,19 @@ class Entity:
     @property
     def location(self):
         return self.x, self.y
+
+    def set_goal_point(self):
+        room = self.room
+        body_r = self.body_radius
+        if room.door_top_y - body_r <= self.y <= room.size:
+            self.goal_x = room.door_top_x
+            self.goal_y = room.door_top_y - body_r
+        elif 0 <= self.y <= room.door_bottom_y + body_r:
+            self.goal_x = room.door_bottom_x
+            self.goal_y = room.door_bottom_y + body_r
+        else:
+            self.goal_x = room.door_top_x
+            self.goal_y = self.y
 
     """ Move a step, returns the new entity's position (x, y) """
     def move(self, entities_in_room):
@@ -57,6 +74,5 @@ class Entity:
         return x1, y1
 
     def is_reached_door(self):
-        return self.x >= self.goal_x \
-               and \
-               self.goal_y - self.goal_y_offset <= self.y <= self.goal_y + self.goal_y_offset
+        room = self.room
+        return self.x >= room.door_top_x and room.door_bottom_y <= self.y <= room.door_top_y

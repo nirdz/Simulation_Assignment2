@@ -30,7 +30,7 @@ print()
 
 print("**** Sim of 3 entities and random positions and desired velocities ****")
 print("$$$$$ WITHOUT CHECKING COLLISIONS $$$$$")
-sim = Simulation(3, starting_pos="random", velocities_type="random")
+sim = Simulation(5, starting_pos="random", velocities_type="random")
 sim.simulate()
 print("Positions:")
 print(len(sim.entities_pos_at_k))
