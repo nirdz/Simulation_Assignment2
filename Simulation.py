@@ -1,6 +1,7 @@
 from Room import Room
 from Entity import Entity
 from random import randrange
+import random
 import numpy as np
 from GraphsPlot import drawVelocity, drawLocation, escapeTimeBar
 
@@ -9,17 +10,14 @@ def get_random_desired_v(min_v, max_v, jumps=0.05):
     random_v_arr = np.arange(min_v, max_v + jumps, jumps)
     return round(random_v_arr[randrange(0, len(random_v_arr))], 5)
 
-def get_random_starting_pos(room_size, jumps=0.1):
-    # TODO: in case of multiple entities, check for collisions before returning result
-    min_x = 0.6
-    max_x = room_size - 0.6
-    min_y = 0.6
-    max_y = room_size-0.6
-    random_x_arr = np.arange(min_x, max_x, jumps)
-    random_y_arr = np.arange(min_y, max_y, jumps)
-    chosen_x = round(random_x_arr[randrange(0, len(random_x_arr))], 6)
-    chosen_y = round(random_y_arr[randrange(0, len(random_y_arr))], 6)
-    return chosen_x, chosen_y
+def get_random_legal_pos_list(room_size):
+    pos_list = []
+    for i in range(int(room_size) - 1):
+        for j in range(int(room_size)):
+            pos_list.append( (i + 0.5, j + 0.5) )
+    # Shuffle the list
+    random.shuffle(pos_list)
+    return pos_list
 
 class Simulation:
     def __init__(self, entities_num, max_k=9000, room_size=15.0, doors=1, starting_pos="center", velocities_type="same", default_desired_v=0.6):
@@ -29,24 +27,21 @@ class Simulation:
         y0 = room_size / 2
         v0 = 0
         desired_v = default_desired_v  # default desired velocity under relaxed is 0.6
-        if velocities_type == "random":
-            desired_v = get_random_desired_v(0.6, 1.5)
-        if starting_pos == "random":
-            x0, y0 = get_random_starting_pos(room_size)
-
         tau = 0.5
+        random_starting_pos_list = get_random_legal_pos_list(room_size)
         self.desired_v_list = []  # List for each of the entities desired velocity
         for i in range(entities_num):
+            if starting_pos == "random":
+                x0, y0 = random_starting_pos_list[i][0], random_starting_pos_list[i][1]
+
+            if velocities_type == "random":
+                desired_v = get_random_desired_v(0.6, 1.5, 0.05)
+
             entity = Entity(i, room, x0, y0, v0=v0, desired_v=desired_v, tau=tau)
             entities_list.append(entity)
             self.desired_v_list.append(desired_v)
-            # TODO: Based on starting_pos and velocities_type, decide if randomize the starting positions
-            #   and the desired velocity for each entity
-            # x0 = ...., desired_v = ...... (for the next entity iteration)
-            if velocities_type == "random":
-                desired_v = get_random_desired_v(0.6, 1.5, 0.05)
-            if starting_pos == "random":
-                x0, y0 = get_random_starting_pos(room_size)
+
+
 
 
         self.entities_list = entities_list
@@ -85,6 +80,7 @@ class Simulation:
             #     print("k:", self.current_k)
                 # drawVelocity(self.entities_v_dict)
                 # drawLocation(self.entities_pos_dict)
+
             # if self.current_k % 20 == 0:
             #     print("k:", self.current_k)
             #     drawLocation(self.entities_pos_dict)
