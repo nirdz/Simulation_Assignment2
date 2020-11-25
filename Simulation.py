@@ -2,7 +2,7 @@ from Room import Room
 from Entity import Entity
 from random import randrange
 import numpy as np
-
+from GraphsPlot import drawVelocity, drawLocation, escapeTimeBar
 
 def get_random_desired_v(min_v, max_v, jumps=0.05):
     # Create array of all the possible values
@@ -22,7 +22,7 @@ def get_random_starting_pos(room_size, jumps=0.1):
     return chosen_x, chosen_y
 
 class Simulation:
-    def __init__(self, entities_num, max_k=9000, room_size=15.0, doors=1, starting_pos="center", velocities_type="same", default_desired_v=0.6):
+    def __init__(self, entities_num, max_k=30000, room_size=15.0, doors=1, starting_pos="center", velocities_type="same", default_desired_v=0.6):
         room = Room(size=room_size, doors=doors)
         entities_list = []
         x0 = room_size / 2  # default position, middle of the room
@@ -52,9 +52,9 @@ class Simulation:
         self.entities_list = entities_list
 
         # Each item represents an entity's locations list
-        self.entities_pos_dict = dict(zip([str(ent.i) for ent in entities_list], [ [] for ent in entities_list]))
+        self.entities_pos_dict = dict(zip([str(ent.i) for ent in entities_list], [ [ent.location] for ent in entities_list]))
         # Each item represents an entity's velocities list
-        self.entities_v_dict = dict(zip([str(ent.i) for ent in entities_list], [ [] for ent in entities_list]))
+        self.entities_v_dict = dict(zip([str(ent.i) for ent in entities_list], [ [v0] for ent in entities_list]))
 
 
 
@@ -75,8 +75,21 @@ class Simulation:
             for ent in entities_to_remove:
                 self.entities_list.remove(ent)
 
-
             self.current_k += 1
+            is_v_0_for_all = True
+            for ent in self.entities_list:
+                if ent.v_k_minus1 > 0:
+                    is_v_0_for_all = False
+                    break
+            if is_v_0_for_all:
+                print("k:", self.current_k)
+                # drawVelocity(self.entities_v_dict)
+                # drawLocation(self.entities_pos_dict)
+            # if self.current_k % 20 == 0:
+            #     print("k:", self.current_k)
+            #     drawLocation(self.entities_pos_dict)
+
+
 
     # """ Returns true if the room is empty """
     # def check_if_people_inside(self):
