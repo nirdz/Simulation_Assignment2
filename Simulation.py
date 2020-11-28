@@ -21,7 +21,7 @@ def get_random_legal_pos_list(room_size):
 
 class Simulation:
     def __init__(self, entities_num, max_k=900000, room_size=15.0, doors=1, starting_pos="center", velocities_type="same", default_desired_v=0.6):
-        room = Room(size=room_size, doors=doors)
+        self.room = Room(size=room_size, doors=doors)
         entities_list = []
         x0 = room_size / 2  # default position, middle of the room
         y0 = room_size / 2
@@ -37,7 +37,7 @@ class Simulation:
             if velocities_type == "random":
                 desired_v = get_random_desired_v(0.6, 1.5, 0.05)
 
-            entity = Entity(i, room, x0, y0, v0=v0, desired_v=desired_v, tau=tau)
+            entity = Entity(i, self.room, x0, y0, v0=v0, desired_v=desired_v, tau=tau)
             entities_list.append(entity)
             self.desired_v_list.append(desired_v)
 
@@ -80,13 +80,16 @@ class Simulation:
             if is_v_0_for_all:
                 print("k:", self.current_k)
             iteration = iteration + 1
+
+            if self.current_k % 50 == 0:
+                print("k:", self.current_k)
+                #drawLocation(self.entities_pos_dict)
+
         return iteration
                 # drawVelocity(self.entities_v_dict)
                 # drawLocation(self.entities_pos_dict)
 
-            # if self.current_k % 20 == 0:
-            #     print("k:", self.current_k)
-            #     drawLocation(self.entities_pos_dict)
+
 
 
 
