@@ -7,6 +7,8 @@ class Room:
         self.door_top_y = round((size / 2.0) + (door_width / 2.0), 3)
         self.door_bottom_x = size
         self.door_bottom_y = round((size / 2.0) - (door_width / 2.0), 3)
+        self.center_door_x = size
+        self.center_door_y = self.door_bottom_y-size/2
         """
         |
         |

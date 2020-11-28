@@ -20,7 +20,7 @@ def get_random_legal_pos_list(room_size):
     return pos_list
 
 class Simulation:
-    def __init__(self, entities_num, max_k=9000, room_size=15.0, doors=1, starting_pos="center", velocities_type="same", default_desired_v=0.6):
+    def __init__(self, entities_num, max_k=900000, room_size=15.0, doors=1, starting_pos="center", velocities_type="same", default_desired_v=0.6):
         room = Room(size=room_size, doors=doors)
         entities_list = []
         x0 = room_size / 2  # default position, middle of the room
@@ -58,7 +58,8 @@ class Simulation:
         self.current_k = 1
 
     def simulate(self):
-        while self.current_k <= self.max_k and len(self.entities_list) > 0:
+        iteration = 0
+        while len(self.entities_list) > 0: #while self.current_k <= self.max_k and len(self.entities_list) > 0:
             entities_to_remove = []
             for entity in self.entities_list:
                 entity.move(self.entities_list)
@@ -71,13 +72,15 @@ class Simulation:
                 self.entities_list.remove(ent)
 
             self.current_k += 1
-            # is_v_0_for_all = True
-            # for ent in self.entities_list:
-            #     if ent.v_k_minus1 > 0:
-            #         is_v_0_for_all = False
-            #         break
-            # if is_v_0_for_all:
-            #     print("k:", self.current_k)
+            is_v_0_for_all = True
+            for ent in self.entities_list:
+                if ent.v_k_minus1 > 0:
+                    is_v_0_for_all = False
+                    break
+            if is_v_0_for_all:
+                print("k:", self.current_k)
+            iteration = iteration + 1
+        return iteration
                 # drawVelocity(self.entities_v_dict)
                 # drawLocation(self.entities_pos_dict)
 

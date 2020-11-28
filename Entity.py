@@ -64,7 +64,7 @@ class Entity:
         y1 = round(y1, 6)
 
         # Check collision with walls and other entities
-        num_of_collisions = get_how_many_collisions_at_pos(self.i, x1, y1, entities_in_room)
+        num_of_collisions = get_how_many_collisions_at_pos(self, self.i, x1, y1, entities_in_room)
         if num_of_collisions == 0:  # make the step
             # Update the current entity's position
             self.x = x1
@@ -84,7 +84,7 @@ class Entity:
         else:  # Only one potential collision
             # Try to Increase the angle by "random_alpha_inc" and try to make the move
             random_alpha_inc = random.randrange(-180, 181)
-            is_safe, new_x1, new_y1 = is_angle_safe(self.i, self.x, self.y, self.alpha, random_alpha_inc, self.v_k, self.v_k_minus1,
+            is_safe, new_x1, new_y1 = is_angle_safe(self, self.i, self.x, self.y, self.alpha, random_alpha_inc, self.v_k, self.v_k_minus1,
                                                     entities_in_room, self.room.size)
             if is_safe:
                 # Do this step and update the new angle to the goal target
@@ -106,7 +106,7 @@ class Entity:
                 return self.x, self.y
 
             else:  # Try angle "-random_alpha_inc"
-                is_safe, new_x1, new_y1 = is_angle_safe(self.i, self.x, self.y, self.alpha, -1*random_alpha_inc,
+                is_safe, new_x1, new_y1 = is_angle_safe(self,self.i, self.x, self.y, self.alpha, -1*random_alpha_inc,
                                                         self.v_k, self.v_k_minus1, entities_in_room, self.room.size)
                 if is_safe:
                     # Do this step and update the new angle to the goal target
@@ -145,8 +145,10 @@ class Entity:
 
 """ Returns how many collisions are around a point (x,  y), 
     returns 2 if there is more than 1 collision. """
-def get_how_many_collisions_at_pos(i, x, y, entities_in_room):
+def get_how_many_collisions_at_pos(self, i, x, y, entities_in_room):
     count = 0
+    if closestEntityToDoor(self,entities_in_room):
+        return 0
     for entity in entities_in_room:
         # Check if the entity is not me and the it is inside the room
         if i != entity.i and not entity.is_outside:
@@ -159,9 +161,25 @@ def get_how_many_collisions_at_pos(i, x, y, entities_in_room):
                     return count
     return count
 
+def closestEntityToDoor(self,entities_in_room):
+
+    distanceToDoor = math.sqrt( ((self.x-self.goal_x)**2)+((self.y-self.goal_y)**2) )
+    for entity in entities_in_room:
+        # Check if the entity is not me and the it is inside the room
+        if self.i != entity.i and not entity.is_outside:
+            other_ent_x = entity.x
+            other_ent_y = entity.y
+            # Check the dist between us
+            distanceEntityToDoor = math.sqrt(((other_ent_x - entity.goal_x) ** 2) + ((other_ent_y - entity.goal_y) ** 2))
+            if distanceToDoor > distanceEntityToDoor:
+                return False
+    return True
+
+
+
 """ Returns False if the next step with the new angle will make the entity 
     hit the wall or there would be more collisions """
-def is_angle_safe(i, curr_x, curr_y, curr_alpha, alpha_inc, curr_vk, curr_vk_minus1, entities_in_room, room_size):
+def is_angle_safe(self, i, curr_x, curr_y, curr_alpha, alpha_inc, curr_vk, curr_vk_minus1, entities_in_room, room_size):
     new_alpha = curr_alpha + alpha_inc
     new_d = ((curr_vk + curr_vk_minus1) / 2.0) * 0.01
     new_b = new_d * math.cos(math.radians(new_alpha))
@@ -175,7 +193,7 @@ def is_angle_safe(i, curr_x, curr_y, curr_alpha, alpha_inc, curr_vk, curr_vk_min
     if new_x1 < 0.6 or new_x1 > room_size - 0.6 or new_y1 < 0.6 or new_y1 > room_size - 0.6:
         return False, -1, -1
 
-    new_num_of_collisions = get_how_many_collisions_at_pos(i, new_x1, new_y1, entities_in_room)
+    new_num_of_collisions = get_how_many_collisions_at_pos(self, i, new_x1, new_y1, entities_in_room)
     if new_num_of_collisions == 0:
         return True, new_x1, new_y1
     return False, -1, -1
