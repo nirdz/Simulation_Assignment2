@@ -1,6 +1,6 @@
 import pygame
 
-def display_events(pos_dict, room, num_time_iterations, wait_time=15, sim_size=800):
+def display_events(pos_dict, room, num_time_iterations, wait_time=10, sim_size=800):
     # colors
     background_color = (170, 170, 170)  # grey
     people_color = (250, 0, 0)  # red

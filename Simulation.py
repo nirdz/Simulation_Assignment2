@@ -32,7 +32,7 @@ def get_purely_random_starting_pos(room_size, jumps=0.1):
     return chosen_x, chosen_y
 
 class Simulation:
-    def __init__(self, entities_num, max_k=9000, room_size=15.0, doors=1, starting_pos="center", velocities_type="same", default_desired_v=0.6):
+    def __init__(self, entities_num, max_k=7000, room_size=15.0, doors=1, starting_pos="center", velocities_type="same", default_desired_v=0.6):
         self.room = Room(size=room_size, doors=doors)
         entities_list = []
         x0 = room_size / 2  # default position, middle of the room
