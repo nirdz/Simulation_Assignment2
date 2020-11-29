@@ -2,11 +2,12 @@ from Simulation import Simulation
 from GraphsPlot import drawVelocity, drawLocation, escapeTimeBar
 import copy
 import math
+from PygameVisualization import display_events
 
 """ a """
 print("**** Sim of 1 entity and the rest attr are default ****")
 sim1 = Simulation(1)
-sim1.simulate()
+numberOfIterations = sim1.simulate()
 print("Time:", sim1.current_k-1)
 print("Positions:")
 print(sim1.entities_pos_dict)
@@ -17,6 +18,7 @@ print(sim1.entities_v_dict)
 # Displaying the graphs
 drawVelocity(sim1.entities_v_dict)
 drawLocation(sim1.entities_pos_dict)
+# display_events(sim1.entities_pos_dict, sim1.room, numberOfIterations)
 
 """ b """
 print("**** 200 Sims of 1 entity and random positions and default velocity ****")
@@ -24,7 +26,7 @@ sims = []
 time_to_complete_list = []  # Total k it took for each sim to complete
 entities_pos_at_k_for_each_sim = []
 for i in range(200):
-    sim = Simulation(1, starting_pos="random")
+    sim = Simulation(1, starting_pos="pure random")
     sim.simulate()
     sims.append(sim)
     print(i, ": Num of steps: ", sim.current_k-1)

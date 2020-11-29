@@ -19,6 +19,18 @@ def get_random_legal_pos_list(room_size):
     random.shuffle(pos_list)
     return pos_list
 
+def get_purely_random_starting_pos(room_size, jumps=0.1):
+    # Not checking for collisions. Suits for Q1 c
+    min_x = 0.6
+    max_x = room_size - 0.6
+    min_y = 0.6
+    max_y = room_size-0.6
+    random_x_arr = np.arange(min_x, max_x, jumps)
+    random_y_arr = np.arange(min_y, max_y, jumps)
+    chosen_x = round(random_x_arr[randrange(0, len(random_x_arr))], 6)
+    chosen_y = round(random_y_arr[randrange(0, len(random_y_arr))], 6)
+    return chosen_x, chosen_y
+
 class Simulation:
     def __init__(self, entities_num, max_k=900000, room_size=15.0, doors=1, starting_pos="center", velocities_type="same", default_desired_v=0.6):
         self.room = Room(size=room_size, doors=doors)
@@ -33,9 +45,16 @@ class Simulation:
         for i in range(entities_num):
             if starting_pos == "random":
                 x0, y0 = random_starting_pos_list[i][0], random_starting_pos_list[i][1]
+            elif starting_pos == "pure random":
+                x0, y0 = get_purely_random_starting_pos(room_size)
 
             if velocities_type == "random":
                 desired_v = get_random_desired_v(0.6, 1.5, 0.05)
+            elif velocities_type == "same but part old":
+                if (i+1) % 5 == 0:  # Every fifth entity is old
+                    desired_v = round(default_desired_v / 3, 3)
+                else:
+                    desired_v = default_desired_v
 
             entity = Entity(i, self.room, x0, y0, v0=v0, desired_v=desired_v, tau=tau)
             entities_list.append(entity)
@@ -72,17 +91,18 @@ class Simulation:
                 self.entities_list.remove(ent)
 
             self.current_k += 1
-            is_v_0_for_all = True
-            for ent in self.entities_list:
-                if ent.v_k_minus1 > 0:
-                    is_v_0_for_all = False
-                    break
-            if is_v_0_for_all:
-                print("k:", self.current_k)
             iteration = iteration + 1
+            # is_v_0_for_all = True
+            # for ent in self.entities_list:
+            #     if ent.v_k_minus1 > 0:
+            #         is_v_0_for_all = False
+            #         break
+            # if is_v_0_for_all:
+            #     print("k:", self.current_k)
 
-            if self.current_k % 50 == 0:
-                print("k:", self.current_k)
+
+            # if self.current_k % 50 == 0:
+            #     print("k:", self.current_k)
                 #drawLocation(self.entities_pos_dict)
 
         return iteration
