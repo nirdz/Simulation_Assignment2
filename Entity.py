@@ -65,7 +65,7 @@ class Entity:
 
         # Check that the step is not out of boundaries
         if is_step_out_of_boundaries(x1, y1, self.room):
-            if (x1 - 0.25 < 0 or x1 + 0.25 > self.room.size) and not (self.room.door_bottom_y <= self.y <= self.room.door_top_y):
+            if (x1 - 0.25 < 0 or x1 + 0.25 > self.room.size): #and not (self.room.door_bottom_y <= self.y <= self.room.door_top_y):
                 # fix the step to be down or up, depending on the current vector
                 if y1 > self.y:  # moving down
                     self.alpha = 90
@@ -111,23 +111,24 @@ class Entity:
 
         else:  # There are collisions, try different angles to get pass them
             # Try the angles that are in 90 view of the entity's movement vector
+            angles_to_check_1 = np.arange(0, 91, 22.5)
+            angles_to_check_2 = np.arange(-90, 1, 22.5)
+            angles_to_check_3 = np.arange(90, 181, 22.5)
+            angles_to_check_4 = np.arange(-180, -91, 22.5)
+            random.shuffle(angles_to_check_1)
+            random.shuffle(angles_to_check_2)
+            random.shuffle(angles_to_check_3)
+            random.shuffle(angles_to_check_4)
+
             angles_to_check = []
             if self.goal_x > self.x and self.goal_y >= self.y:
-                angles_to_check = np.arange(0, 91, 22.5)
+                angles_to_check = np.concatenate((angles_to_check_1, angles_to_check_2, angles_to_check_3, angles_to_check_4), axis=None)
             elif self.goal_x > self.x and self.goal_y < self.y:
-                angles_to_check = np.arange(-90, 1, 22.5)
+                angles_to_check = np.concatenate((angles_to_check_2, angles_to_check_1, angles_to_check_3, angles_to_check_4), axis=None)
             elif self.goal_x < self.x and self.goal_y >= self.y:
-                angles_to_check = np.arange(90, 181, 22.5)
+                angles_to_check = np.concatenate((angles_to_check_3, angles_to_check_4, angles_to_check_1, angles_to_check_2), axis=None)
             elif self.goal_x < self.x and self.goal_y < self.y:
-                angles_to_check = np.arange(-180, 91, 22.5)
-            # Shuffle the list
-            random.shuffle(angles_to_check)
-            # Add back step
-            if self.goal_x > self.x:
-                angles_to_check = np.append(angles_to_check, [180])
-            else:
-                angles_to_check = np.append(angles_to_check, [0])
-
+                angles_to_check = np.concatenate((angles_to_check_4, angles_to_check_3, angles_to_check_1, angles_to_check_2), axis=None)
 
             for angle in angles_to_check:
                 angle = round(angle, 2)
@@ -225,7 +226,8 @@ class Entity:
         room = self.room
         body_r = self.body_radius
         if not self.is_outside and self.x - body_r >= room.door_top_x \
-                               and room.door_bottom_y <= self.y <= room.door_top_y:
+                and room.door_bottom_y <= self.y - body_r and self.y + body_r <= room.door_top_y:
+                #and room.door_bottom_y <= self.y + body_r <= room.door_top_y:
             self.is_outside = True
         return self.is_outside
 
@@ -289,6 +291,7 @@ def is_angle_safe(self, i, curr_x, curr_y, curr_alpha, alpha_inc, curr_vk, curr_
 
 def is_step_out_of_boundaries(x, y, room):
     # If we are out of boundaries:
-    if not(room.door_bottom_y <= y <= room.door_top_y) \
+    #if not(room.door_bottom_y <= y <= room.door_top_y) \
+    if not(room.door_bottom_y <= y - 0.25 and y + 0.25 <= room.door_top_y) \
             and (x - 0.25 < 0 or x + 0.25 > room.size or y - 0.25 < 0 or y + 0.25 > room.size):
         return 999
