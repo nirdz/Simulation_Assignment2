@@ -32,7 +32,7 @@ def get_purely_random_starting_pos(room_size, jumps=0.1):
     return chosen_x, chosen_y
 
 class Simulation:
-    def __init__(self, entities_num, max_k=900000, room_size=15.0, doors=1, starting_pos="center", velocities_type="same", default_desired_v=0.6):
+    def __init__(self, entities_num, max_k=9000, room_size=15.0, doors=1, starting_pos="center", velocities_type="same", default_desired_v=0.6):
         self.room = Room(size=room_size, doors=doors)
         entities_list = []
         x0 = room_size / 2  # default position, middle of the room
@@ -78,7 +78,7 @@ class Simulation:
 
     def simulate(self):
         iteration = 0
-        while len(self.entities_list) > 0: #while self.current_k <= self.max_k and len(self.entities_list) > 0:
+        while self.current_k <= self.max_k and len(self.entities_list) > 0: #while self.current_k <= self.max_k and len(self.entities_list) > 0:
             entities_to_remove = []
             for entity in self.entities_list:
                 entity.move(self.entities_list)
@@ -101,8 +101,8 @@ class Simulation:
             #     print("k:", self.current_k)
 
 
-            # if self.current_k % 50 == 0:
-            #     print("k:", self.current_k)
+            if self.current_k % 50 == 0:
+                print("k:", self.current_k)
                 #drawLocation(self.entities_pos_dict)
 
         return iteration
