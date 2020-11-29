@@ -13,7 +13,7 @@ def get_random_desired_v(min_v, max_v, jumps=0.05):
 def get_random_legal_pos_list(room_size):
     pos_list = []
     for i in np.arange(0, int(room_size) - 1, 0.5):
-        for j in np.arange(0, int(room_size), 0.5):
+        for j in np.arange(0, int(room_size) - 0.5, 0.5):
             pos_list.append( (i + 0.5, j + 0.5) )
     # Shuffle the list
     random.shuffle(pos_list)
