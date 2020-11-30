@@ -3,6 +3,7 @@ import random
 import numpy as np
 
 class Entity:
+    interaction = 0
     def __init__(self, i, room, x0, y0, body_radius=0.25,  v0=0, desired_v=0.6, tau=0.5):
         self.i = i
         self.room = room  # Room object
@@ -250,20 +251,25 @@ def get_how_many_collisions_at_pos(self, i, x, y, entities_in_room, room_size):
                     return count
     return count
 
+
 def closestEntityToDoor(self, entities_in_room):
-    if self.goal_x > self.room.size:
+    # return False
+    if self.x > self.room.size:
         return True
-    distanceToDoor = math.sqrt( ((self.x - self.room.size)**2)+((self.y-7.5)**2) )
+    # Entity.interaction = Entity.interaction +1
+    # if Entity.interaction < 1000 : return False
+    # print(Entity.interaction)
+    distanceToDoor = math.sqrt( ((self.x - 15)**2)+((self.y-self.goal_y)**2) )
     for entity in entities_in_room:
         # Check if the entity is not me and the it is inside the room
-        if self.i != entity.i and not entity.is_outside and entity.goal_x == self.room.size:
+        if self.i != entity.i and not entity.is_outside:# and entity.goal_x == self.room.size:
             other_ent_x = entity.x
             other_ent_y = entity.y
             # Check the dist between us
-            distanceEntityToDoor = math.sqrt(((other_ent_x - 15) ** 2) + ((other_ent_y - 7.5) ** 2))
+            distanceEntityToDoor = math.sqrt(((other_ent_x - 15) ** 2) + ((other_ent_y - entity.goal_y) ** 2))
             if distanceToDoor > distanceEntityToDoor:
                 return False
-
+    # Entity.interaction = 0
     return True
 
 
