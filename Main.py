@@ -34,7 +34,7 @@ from PygameVisualization import display_events
 
 print("**** Sim of 3 entities and random positions and desired velocities ****")
 # sim = Simulation(200, starting_pos="random", velocities_type="same but part old", default_desired_v=1.1)
-sim = Simulation(100, starting_pos="random", velocities_type="same", default_desired_v=1.5)
+sim = Simulation(80, starting_pos="random", velocities_type="same", default_desired_v=1.5)
 numberOfIterations = sim.simulate()
 print("Time:", numberOfIterations)
 # print("Positions:")
