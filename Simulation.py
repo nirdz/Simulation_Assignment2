@@ -4,6 +4,9 @@ from random import randrange
 import random
 import numpy as np
 from GraphsPlot import drawVelocity, drawLocation, escapeTimeBar
+import cProfile
+pr = cProfile.Profile()
+pr.enable()
 
 def get_random_desired_v(min_v, max_v, jumps=0.05):
     # Create array of all the possible values
@@ -12,9 +15,9 @@ def get_random_desired_v(min_v, max_v, jumps=0.05):
 
 def get_random_legal_pos_list(room_size):
     pos_list = []
-    for i in np.arange(0, int(room_size) - 1, 0.5):
-        for j in np.arange(0, int(room_size) - 0.5, 0.5):
-            pos_list.append( (i + 0.5, j + 0.5) )
+    for i in np.arange(0, int(room_size) - 3, 0.85):
+        for j in np.arange(0, int(room_size) - 2, 0.85):  #-2
+            pos_list.append( (i + 0.85, j + 0.85) )
     # Shuffle the list
     random.shuffle(pos_list)
     return pos_list
@@ -32,7 +35,7 @@ def get_purely_random_starting_pos(room_size, jumps=0.1):
     return chosen_x, chosen_y
 
 class Simulation:
-    def __init__(self, entities_num, max_k=9000, room_size=15.0, doors=1, starting_pos="center", velocities_type="same", default_desired_v=0.6):
+    def __init__(self, entities_num, max_k=11000, room_size=15.0, doors=1, starting_pos="center", velocities_type="same", default_desired_v=0.6):
         self.room = Room(size=room_size, doors=doors)
         entities_list = []
         x0 = room_size / 2  # default position, middle of the room
@@ -101,10 +104,13 @@ class Simulation:
             #     print("k:", self.current_k)
 
 
-            if self.current_k % 50 == 0:
-                print("k:", self.current_k)
+            # if self.current_k % 50 == 0:
+            #     print("k:", self.current_k)
                 #drawLocation(self.entities_pos_dict)
 
+        pr.disable()
+        # after your program ends
+        # pr.print_stats(sort="calls")
         return iteration
                 # drawVelocity(self.entities_v_dict)
                 # drawLocation(self.entities_pos_dict)

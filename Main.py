@@ -32,17 +32,28 @@ from PygameVisualization import display_events
 # drawLocation(sim.entities_pos_dict )
 # print()
 
+
 print("**** Sim of 3 entities and random positions and desired velocities ****")
-# sim = Simulation(200, starting_pos="random", velocities_type="same but part old", default_desired_v=1.1)
-sim = Simulation(80, starting_pos="random", velocities_type="same", default_desired_v=1.5)
+sim = Simulation(200, starting_pos="random", velocities_type="same", default_desired_v=0.9)
 numberOfIterations = sim.simulate()
 print("Time:", numberOfIterations)
+display_events(sim.entities_pos_dict, sim.room, numberOfIterations)
+
 # print("Positions:")
 # print(sim.entities_pos_dict)
 # print("Desired Velocities of each entity:")
 # print(sim.desired_v_list)
 # print("Velocities:")
 # print(sim.entities_v_dict)
-drawVelocity(sim.entities_v_dict)
-drawLocation(sim.entities_pos_dict)
-display_events(sim.entities_pos_dict, sim.room, numberOfIterations)
+# drawVelocity(sim.entities_v_dict)
+# drawLocation(sim.entities_pos_dict)
+
+# while True:
+#     sim = Simulation(20, starting_pos="random", velocities_type="same", default_desired_v=1.1)
+#     numberOfIterations = sim.simulate()
+#     print("Time:", numberOfIterations)
+#     # display_events(sim.entities_pos_dict, sim.room, numberOfIterations)
+#     if numberOfIterations > 2500:
+#         # print(sim.entities_pos_dict)
+#         # print(sim.entities_v_dict)
+#         display_events(sim.entities_pos_dict, sim.room, numberOfIterations)
